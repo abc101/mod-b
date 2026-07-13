@@ -84,7 +84,7 @@ cd mod-b
 cp .env.example .env
 
 # for development
-docker compose -f compose.yml -f compose.dev.yml up -d --build
+docker compose up -d --build
 
 # for production
 docker compose -f compose.yml -f compose.prod.yml up -d --build

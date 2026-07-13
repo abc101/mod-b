@@ -1,7 +1,19 @@
 services:
   app:
+    stdin_open: true
+    tty: true
+
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+
+    user: "${USER_ID:-1000}:${GROUP_ID:-1000}"
+
     env_file:
       - .env
+
+    environment:
+      NODE_ENV: development
 
     ports:
       - "${PAYLOAD_PORT:-3000}:3000"
@@ -11,6 +23,30 @@ services:
         condition: service_healthy
 
     restart: unless-stopped
+
+    volumes:
+      - ./:/home/node/app
+      - payload_node_modules:/home/node/app/node_modules
+      - payload_next_cache:/home/node/app/.next
+
+    command: >
+      sh -c "
+        if [ ! -f package.json ]; then
+          echo '🚨 package.json not found.'
+          echo 'Please clone Mod-B into this directory.'
+          exit 1
+        fi
+
+        if [ \"$$INSTALL\" = \"yes\" ]; then
+          echo '📦 Installing dependencies...'
+          pnpm install || exit 1
+        else
+          echo '⏭️ Skipping install.'
+        fi
+
+        echo '🚀 Starting development server...'
+        exec pnpm dev
+      "
 
   db:
     image: postgres:16-alpine
@@ -34,3 +70,5 @@ services:
 
 volumes:
   postgres_data:
+  payload_node_modules:
+  payload_next_cache:
