@@ -45,7 +45,6 @@ public/
 .pnpm-store/
 .vscode/
 backups/
-docker-compose.override.yml
 
 # Playwright
 node_modules/
@@ -53,6 +52,7 @@ node_modules/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
 
 # Migration data directory (ex: gnuboard) 
 /imports/
