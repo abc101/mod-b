@@ -5,7 +5,7 @@ services:
 
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
 
     user: "${USER_ID:-1000}:${GROUP_ID:-1000}"
 

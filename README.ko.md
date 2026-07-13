@@ -87,7 +87,7 @@ cp .env.example .env
 docker compose up -d --build
 
 # for production
-docker compose -f compose.yml -f compose.prod.yml up -d --build
+docker compose -f compose.prod.yml up -d --build
 
 # open your browser with localhost:3000 or your domain
 
