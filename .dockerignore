@@ -1,0 +1,8 @@
+scripts/
+*.sql
+*.dump
+.git
+.vscode
+tests
+docs
+*.log

@@ -1,0 +1,27 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      
+    environment:
+      NODE_ENV: production
+
+    volumes:
+      - media_data:/home/node/app/media
+
+    command: >
+      sh -c "
+        if [ \"$$MIGRATE\" = \"yes\" ]; then
+          echo '🗄️ Running database migrations...'
+          pnpm payload migrate || exit 1
+        else
+          echo '⏭️ Skipping migrations.'
+        fi
+
+        echo '🚀 Starting production server...'
+        exec pnpm start
+      "
+
+volumes:
+  media_data:

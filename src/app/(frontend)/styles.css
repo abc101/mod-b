@@ -1,0 +1,53 @@
+@import "tailwindcss";
+
+@keyframes notice-slide-up {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+
+  12% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  82% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}
+
+.animate-notice-slide-up {
+  animation: notice-slide-up 4s ease-in-out infinite;
+}
+
+@keyframes date-time-fade {
+  0% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  15% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  85% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+.animate-date-time-fade {
+  animation: date-time-fade 5s ease-in-out infinite;
+}
