@@ -1,4 +1,3 @@
-scripts/
 *.sql
 *.dump
 .git
