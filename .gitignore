@@ -56,3 +56,4 @@ node_modules/
 
 # Migration data directory (ex: gnuboard) 
 /imports/
+/scripts/imports/
