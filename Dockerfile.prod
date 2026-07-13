@@ -1,17 +1,23 @@
 FROM node:24-slim
 
-RUN apt-get update && apt-get install -y \
-    python3 \
-    make \
-    g++ \
-    git \
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        python3 \
+        make \
+        g++ \
+        git \
+        gosu \
     && rm -rf /var/lib/apt/lists/*
 
 RUN npm install -g pnpm@10
 
 WORKDIR /home/node/app
 
-RUN mkdir -p /home/node/app \
+RUN mkdir -p \
+        /home/node/app \
+        /home/node/app/media \
+        /home/node/app/.next \
+        /home/node/app/node_modules \
     && chown -R node:node /home/node/app
 
 COPY --chown=node:node package.json pnpm-lock.yaml ./
@@ -24,6 +30,14 @@ COPY --chown=node:node . .
 
 RUN pnpm build
 
-EXPOSE 3000
+USER root
+
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 
 CMD ["pnpm", "start"]
+
+EXPOSE 3000

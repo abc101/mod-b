@@ -40,7 +40,8 @@ yarn-error.log*
 next-env.d.ts
 
 # local data
-media/
+/media/*
+!/media/.gitkeep
 public/
 .pnpm-store/
 .vscode/
@@ -57,3 +58,5 @@ node_modules/
 # Migration data directory (ex: gnuboard) 
 /imports/
 /scripts/imports/
+
+# 
