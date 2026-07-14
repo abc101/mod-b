@@ -204,6 +204,53 @@ else
   exit 1
 fi
 
+extract_database_name() {
+  local url="${1:-}"
+
+  if [ -z "$url" ]; then
+    return 1
+  fi
+
+  url="${url%%\?*}"
+  url="${url%/}"
+
+  printf '%s\n' "${url##*/}"
+}
+
+validate_database_target() {
+  local app_database_url=""
+  local app_database_name=""
+
+  if [ -n "${DATABASE_URI:-}" ]; then
+    app_database_url="$DATABASE_URI"
+  elif [ -n "${DATABASE_URL:-}" ]; then
+    app_database_url="$DATABASE_URL"
+  else
+    echo "⚠️ DATABASE_URI and DATABASE_URL are not set."
+    echo "   Backup/restore will use POSTGRES_DB=$POSTGRES_DB"
+    return
+  fi
+
+  app_database_name="$(extract_database_name "$app_database_url")"
+
+  echo ""
+  echo "🔍 Checking database configuration..."
+  echo "   POSTGRES_DB : $POSTGRES_DB"
+  echo "   App DB name : $app_database_name"
+
+  if [ "$POSTGRES_DB" != "$app_database_name" ]; then
+    echo ""
+    echo "❌ Database name mismatch."
+    echo "   POSTGRES_DB points to: $POSTGRES_DB"
+    echo "   The application points to: $app_database_name"
+    echo ""
+    echo "Update .env so both values use the same database."
+    exit 1
+  fi
+
+  echo "✅ Database names match."
+}
+
 : "${POSTGRES_USER:?POSTGRES_USER is required}"
 : "${POSTGRES_DB:?POSTGRES_DB is required}"
 
