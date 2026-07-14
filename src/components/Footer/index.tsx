@@ -268,6 +268,16 @@ export default async function Footer() {
                 {bottomBar.rightText}
               </span>
             )}
+            <div className="w-full mt-4 text-center">
+              <a
+                href="https://abc101.net"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs opacity-60 hover:opacity-100 transition-opacity"
+              >
+                Powered by Mod-B
+              </a>
+            </div>
           </div>
         </div>
       </div>
