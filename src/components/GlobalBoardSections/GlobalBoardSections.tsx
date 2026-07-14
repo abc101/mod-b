@@ -74,7 +74,7 @@ export default async function GlobalBoardSections() {
           const limit = section.postCount || 5
 
           let boardSlug = ''
-          let title = section.sectionTitle || '⚡ Latest Posts'
+          let title = section.sectionTitle || ''
 
           if (sectionType === 'advertisement') {
             const ad = getRelation(section.advertisement)
@@ -178,10 +178,12 @@ export default async function GlobalBoardSections() {
               return null
             }
 
-            let boardName = ''
-            
             boardSlug = selectedBoard.slug
-            boardName = selectedBoard.name || selectedBoard.slug
+
+            title =
+              section.sectionTitle?.trim() ||
+              selectedBoard.name ||
+              selectedBoard.slug
 
             posts = await getPostsByBoard({
               payload,
