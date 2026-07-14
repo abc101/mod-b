@@ -70,13 +70,25 @@ export default function FrontendMainLayoutClient({
       : 'grid-cols-1 lg:grid-cols-[minmax(0,7fr)_minmax(320px,3fr)]'
 
   return (
-    <main className="w-full flex-1">
-      <div className={`${mainContainerClass} grid ${gridClass} gap-8`}>
-        {showSidebar && sidebarPosition === 'left' && sidebar}
+    <main className="w-full min-w-0 flex-1">
+      <div
+        className={`${mainContainerClass} grid w-full min-w-0 ${gridClass} gap-8`}
+      >
+        {showSidebar && sidebarPosition === 'left' && (
+          <div className="w-full min-w-0">
+            {sidebar}
+          </div>
+        )}
 
-        <div className="min-w-0">{children}</div>
+        <div className="w-full min-w-0">
+          {children}
+        </div>
 
-        {showSidebar && sidebarPosition === 'right' && sidebar}
+        {showSidebar && sidebarPosition === 'right' && (
+          <div className="w-full min-w-0">
+            {sidebar}
+          </div>
+        )}
       </div>
     </main>
   )

@@ -4,7 +4,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { headers as getHeaders } from 'next/headers'
 import GlobalBoardSections from '@/components/GlobalBoardSections/GlobalBoardSections'
 import AnnouncementTicker from '@/components/Announcements/AnnouncementTicker'
@@ -18,6 +18,11 @@ import { NotificationProvider } from '@/components/NotificationProvider'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+}
 
 export async function generateMetadata(): Promise<Metadata> {
   const payload = await getPayload({ config: configPromise })
@@ -136,8 +141,8 @@ export default async function FrontendLayout({
 
   const mainContainerClass =
     layoutSettings?.mainWidth === 'full'
-      ? 'w-full px-6 py-8'
-      : 'mx-auto w-full max-w-[var(--max-width)] px-6 py-8'
+      ? 'w-full px-4 py-6 sm:px-6 sm:py-8'
+      : 'mx-auto w-full max-w-[var(--max-width)] px-4 py-6 sm:px-6 sm:py-8'
 
   if (maintenance?.enabled) {
     const headers = await getHeaders()
@@ -248,7 +253,7 @@ export default async function FrontendLayout({
                 visibility={globalBoardSettings.visibility || {}}
                 mainContainerClass={mainContainerClass}
                 sidebar={
-                  <aside className="min-w-0 w-full max-w-md mx-auto lg:max-w-none lg:mx-0 space-y-4">
+                  <aside className="w-full min-w-0 max-w-full space-y-4 lg:max-w-none">
                     <GlobalBoardSections />
 
                     {enableSidebarAds && (
