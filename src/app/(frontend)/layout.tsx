@@ -133,8 +133,19 @@ export default async function FrontendLayout({
   }
 
   const gaId = settings?.seo?.googleAnalyticsId
-  const adsenseId = settings?.seo?.googleAdsenseId
-  const bodyScript = settings?.seo?.bodyScript
+
+  const googleAdsEnabled = settings?.googleAds?.enabled === true
+  const adsenseId =
+    typeof settings?.googleAds?.publisherId === 'string'
+      ? settings.googleAds.publisherId.trim()
+      : ''
+
+  const autoAdsEnabled =
+    googleAdsEnabled &&
+    settings?.googleAds?.autoAds === true &&
+    Boolean(adsenseId)
+
+  const bodyScript = settings?.customScripts?.bodyScript
 
   const maintenance = settings?.maintenance
   let showMaintenancePage = false
@@ -176,12 +187,21 @@ export default async function FrontendLayout({
           </>
         )}
 
-        {adsenseId && (
-          <script
-            async
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseId}`}
-            crossOrigin="anonymous"
-          />
+        {googleAdsEnabled && adsenseId && (
+          <>
+            <meta
+              name="google-adsense-account"
+              content={adsenseId}
+            />
+
+            <script
+              async
+              src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${encodeURIComponent(
+                adsenseId,
+              )}`}
+              crossOrigin="anonymous"
+            />
+          </>
         )}
       </head>
 
