@@ -41,6 +41,67 @@ import ReportButton from '@/components/ReportButton'
 import BookmarkButton from '@/components/BookmarkButton'
 import { isPostBookmarked } from '@/lib/community/server'
 
+function normalizeMetaText(value: string) {
+  return value
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;/gi, "'")
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+function getLexicalText(node: unknown): string {
+  if (!node || typeof node !== 'object') return ''
+
+  const record = node as {
+    text?: unknown
+    children?: unknown[]
+  }
+
+  const ownText =
+    typeof record.text === 'string'
+      ? record.text
+      : ''
+
+  const childText =
+    Array.isArray(record.children)
+      ? record.children.map(getLexicalText).join(' ')
+      : ''
+
+  return `${ownText} ${childText}`.trim()
+}
+
+function getPostMetaDescription(post: Post) {
+  // Never expose private post contents in metadata.
+  if (post.isSecret) {
+    return undefined
+  }
+
+  const rawText = post.contentHtml
+    ? normalizeMetaText(post.contentHtml)
+    : normalizeMetaText(
+        getLexicalText(post.content?.root),
+      )
+
+  if (!rawText) {
+    return undefined
+  }
+
+  const maxLength = 160
+
+  if (rawText.length <= maxLength) {
+    return rawText
+  }
+
+  return `${rawText.slice(0, maxLength - 1).trimEnd()}…`
+}
+
 type Props = {
   params: Promise<{ slug: string; id: string; postSlug: string }>
 }
@@ -50,7 +111,8 @@ export const dynamic = 'force-dynamic'
 export async function generateMetadata({
   params,
 }: Props): Promise<NextMetadata> {
-  const { id } = await params
+  const { slug, id } = await params
+
   const headers = await getHeaders()
   const payload = await getPayload({ config: configPromise })
   const { user } = await payload.auth({ headers })
@@ -77,13 +139,52 @@ export async function generateMetadata({
   }
 
   const thumbnail = getPostThumbnail(post)
+  const canonicalSlug = slugifyTitle(post.title)
+
+  const canonicalPath =
+    `/board/${encodeURIComponent(slug)}` +
+    `/${post.id}` +
+    `/${encodeURIComponent(canonicalSlug)}`
+
+  const description = getPostMetaDescription(post)
 
   return {
     metadataBase: getMetadataBase(),
+
     title: post.title,
-    openGraph: thumbnail?.url
-      ? { images: [{ url: thumbnail.url }] }
-      : undefined,
+
+    ...(description ? { description } : {}),
+
+    alternates: {
+      canonical: canonicalPath,
+    },
+
+    openGraph: {
+      type: 'article',
+      title: post.title,
+      url: canonicalPath,
+
+      ...(description ? { description } : {}),
+
+      ...(thumbnail?.url
+        ? {
+            images: [{ url: thumbnail.url }],
+          }
+        : {}),
+    },
+
+    twitter: {
+      card: thumbnail?.url ? 'summary_large_image' : 'summary',
+      title: post.title,
+
+      ...(description ? { description } : {}),
+
+      ...(thumbnail?.url
+        ? {
+            images: [thumbnail.url],
+          }
+        : {}),
+    },
   }
 }
 
