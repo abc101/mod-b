@@ -22,6 +22,7 @@ services:
     volumes:
       - ./media:/home/node/app/media
       - ./scripts:/home/node/app/scripts
+      - ./data:/home/node/app/data
 
     command: >
       sh -c "
