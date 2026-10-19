@@ -76,7 +76,7 @@ Payload CMS의 강력한 관리 기능과 Next.js App Router의 최신 기능을
 With Docker (recommend)
 
 ```bash
-git clone https://github.com/your-name/mod-b.git
+git clone https://github.com/abc101/mod-b.git
 
 cd mod-b
 
