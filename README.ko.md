@@ -81,7 +81,7 @@ git clone https://github.com/abc101/mod-b.git
 cd mod-b
 
 # copy and edit .env
-cp .env.example .env
+cp sample.env .env
 
 # for development
 docker compose up -d --build
