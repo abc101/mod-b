@@ -75,7 +75,7 @@ Mod-B is a full-featured community platform designed for building modern forums,
 With Docker (recommend)
 
 ```bash
-git clone https://github.com/your-name/mod-b.git
+git clone https://github.com/abc101/mod-b.git
 
 cd mod-b
 
